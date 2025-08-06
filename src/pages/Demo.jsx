@@ -6,6 +6,15 @@ export const Demo = () => {
   // Access the global state and dispatch function using the useGlobalReducer hook.
   const { store, dispatch } = useGlobalReducer()
 
+  function deleteContact(index){
+    console.log('delete' + index);
+    dispatch({type: 'delete_contacto',
+      payload: {indexDelete: index}
+    })
+
+
+  }
+
   return (
     <div className="container">
       <ul className="list-group">
@@ -33,6 +42,8 @@ export const Demo = () => {
           );
         })}
       </ul>
+
+ 
       <br />
 
       <Link to="/">
