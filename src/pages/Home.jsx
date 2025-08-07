@@ -3,33 +3,46 @@ import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
 export const Home = () => {
-
+  const apiurl = import.meta.env.VITE_API_URL
+  console.log(apiurl)
   const {store, dispatch} =useGlobalReducer()
+  
+  function loadContact(){
+    console.log('cargados los contactos')
+    fetch('https://playground.4geeks.com/contact/agendas/superman/contacts')
+    .then((res)=> res.json())
+    .then((data)=> {
+      console.log(data.contacts)
+      dispatch({
+        type: 'load_contacto',
+        payload: data.contacts
+    })
+    })
+ 
+    };
 
     function deleteContact(index){
-    console.log('delete' + index);
-    dispatch({type: 'delete_contacto',
+    console.log('delete' + index)
+    .fetch(`${apiurl}/agendas/superman/contacts/${id}`)
+    .then((res)=> res.json)
+    .then((data)=> console.log(data))
+  /* dispatch({type: 'delete_contacto',
       payload: {indexDelete: index}
-    })
+    })*/
 	 }
 
 	 useEffect( ()=>{  
-		console.log('cargo')
+     loadContact()
+
 	 	let contactosIniciales = [      {
-        name: "batmanGomw",
+        name: "batman1",
         phone: 1,
       }, 
 		      {
-        name: "batmanHome2",
+        name: "batman2",
         phone: 1,
       }]
-	  fetch('https://playground.4geeks.com/contact/agendas/Batman/contacts')
-	  .then((res)=> res.json())
-	  .then((data)=> console.log(data.contactos))
-	  dispatch({type: 'load_contacto',
-      payload: {favoritos: contactosIniciales}
-    })
-},[])
+    },[])
 
 	return (
 		<div className="text-center mt-5">

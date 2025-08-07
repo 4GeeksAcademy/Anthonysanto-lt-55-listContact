@@ -22,7 +22,8 @@ export const initialStore=()=>{
         name: "batman2",
         phone: 22,
       },
-    ]
+    ],
+    contactos: []
   }
 }
 
@@ -44,11 +45,11 @@ export default function storeReducer(store, action = {}) {
           contactos: store.contactos.filter(  (contactos,index) => index != indexDelete)
       };
        case 'load_contacto':
-      const { favoritos } = action.payload
-      console.log('Store load contact'+ favoritos)
+
+      console.log('Store load contact')
       return {
         ...store,
-          contactos: favoritos
+          contactos: action.payload
       };
     default:
       throw Error('Unknown action.');
