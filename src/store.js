@@ -39,18 +39,21 @@ export default function storeReducer(store, action = {}) {
       };
     case 'delete_contacto':
       const { indexDelete } = action.payload
-      console.log('Store delete contact'+ indexDelete)
+
       return {
         ...store,
           contactos: store.contactos.filter(  (contactos,index) => index != indexDelete)
       };
-       case 'load_contacto':
-
-      console.log('Store load contact')
+    case 'load_contacto':
       return {
         ...store,
           contactos: action.payload
       };
+    case 'add_contact':
+    return {
+       ...store,
+        contactos: [...store.contactos,action.payload]
+    }
     default:
       throw Error('Unknown action.');
   }    

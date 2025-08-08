@@ -7,7 +7,7 @@ export const Demo = () => {
   const { store, dispatch } = useGlobalReducer()
 
   function deleteContact(index){
-    console.log('delete' + index);
+
     dispatch({type: 'delete_contacto',
       payload: {indexDelete: index}
     })

@@ -1,18 +1,19 @@
 import { useEffect } from "react";
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
   const apiurl = import.meta.env.VITE_API_URL;
   const { store, dispatch } = useGlobalReducer();
 
-  // Cargar contactos desde la API
+  // load contacts  from api 
   function loadContact() {
-    console.log("Cargando contactos...");
-    fetch(`${apiurl}/agendas/superman/contacts`)
+
+    fetch(`${apiurl}/agendas/Anthony_agenda/contacts`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Contactos recibidos:", data.contacts);
+
         dispatch({
           type: "load_contacto",
           payload: data.contacts,
@@ -21,48 +22,64 @@ export const Home = () => {
       .catch((err) => console.error("Error al cargar contactos:", err));
   }
 
-  // Eliminar contacto por ID
+
+  // delete contact by id (api)
   function deleteContact(id) {
-    console.log("Eliminando contacto con id:", id);
-    fetch(`${apiurl}/agendas/superman/contacts/${id}`, {
+
+    fetch(`${apiurl}/agendas/Anthony_agenda/contacts/${id}`, {
       method: "DELETE",
     })
       .then((res) =>  res)
       .then((data) => {
-        console.log("Contacto eliminado:", data);
-        loadContact(); // Recargar lista después de borrar
+        loadContact(); 
       })
       .catch((err) => {
         console.error("Error eliminando contacto:", err);
       });
   }
 
-  // Ejecutar carga al montar componente
   useEffect(() => {
     loadContact();
   }, []);
 
   return (
-    <div className="text-center mt-5">
-      <ul className="list-group">
+    <div className="text-start">
+      <ul className="list-group ">
         {store?.contactos?.map((item) => (
           <li
-            key={item.id}
-            className="list-group-item d-flex justify-content-between"
-          >
-            <div>
-              <p>name: {item.name}</p>
-              <p>number: {item.phone}</p>
-              <p>id: {item.id}</p>
-            </div>
-            <button onClick={() => deleteContact(item.id)}>Eliminar</button>
+              key={item.id}
+              className="list-group-item d-flex justify-content-between align-items-center">
+
+              <div className="d-flex align-items-start">
+                <img src={rigoImageUrl} alt="rigo" style={{ borderRadius: "40%" }}/>
+                <div>
+                  <h2>{item.name}</h2>
+                  <p className="text-body-secondary">
+                    <i className="fa-solid fa-location-dot"></i> {item.address}
+                  </p>
+                  <p className="text-body-secondary">
+                    <i className="fa-solid fa-phone"></i> {item.phone}
+                  </p>
+                  <p className="text-body-secondary">
+                    <i className="fa-solid fa-envelope"></i> {item.email}
+                  </p>
+                </div>
+              </div>
+ 
+              <div className="d-flex justify-content-between">
+                <Link to={`/Single/${item.id}`}>
+                <i className="fa-solid fa-pen me-2" style={{ cursor: "pointer", fontSize: "30px" }}></i>
+                </Link>
+                  <i className="fa-solid fa-trash ms-2" style={{ cursor: "pointer", fontSize: "30px" }}
+                    onClick={() => deleteContact(item.id)}
+                  ></i>
+                    
+                  
+              </div>
+ 
           </li>
         ))}
       </ul>
-      <h1>Hello Rigo!!</h1>
-      <p>
-        <img src={rigoImageUrl} alt="rigo" />
-      </p>
     </div>
   );
 };

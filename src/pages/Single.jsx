@@ -1,37 +1,91 @@
-// Import necessary hooks and components from react-router-dom and other libraries.
-import { Link, useParams } from "react-router-dom";  // To use link for navigation and useParams to get URL parameters
-import PropTypes from "prop-types";  // To define prop types for this component
-import rigoImageUrl from "../assets/img/rigo-baby.jpg"  // Import an image asset
-import useGlobalReducer from "../hooks/useGlobalReducer";  // Import a custom hook for accessing the global state
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
-// Define and export the Single component which displays individual item details.
-export const Single = props => {
-  // Access the global state using the custom hook.
-  const { store } = useGlobalReducer()
+export const Single = () => {
+  const apiurl = import.meta.env.VITE_API_URL;
+  const { store, dispatch } = useGlobalReducer();
+  const { theId } = useParams();
 
-  // Retrieve the 'theId' URL parameter using useParams hook.
-  const { theId } = useParams()
-  const singleTodo = store.todos.find(todo => todo.id === parseInt(theId));
+  const singleContact = store.contactos.find(c => c.id === parseInt(theId));
+
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    address: "",
+  });
+
+  useEffect(() => {
+    if (singleContact) {
+      setForm({
+        name: singleContact.name,
+        phone: singleContact.phone,
+        email: singleContact.email,
+        address: singleContact.address,
+      });
+    }
+  }, [singleContact]);
+
+function editContact() {
+  const optionsRequest = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(form),
+  };
+  fetch(`${apiurl}/agendas/Anthony_agenda/contacts/${theId}`, optionsRequest)
+    .then((res) => res.json())
+    .then((result) => {
+      setForm({ name: "", phone: "", email: "", address: "" });
+    });
+}
 
   return (
-    <div className="container text-center">
-      {/* Display the title of the todo element dynamically retrieved from the store using theId. */}
-      <h1 className="display-4">Todo: {singleTodo?.title}</h1>
-      <hr className="my-4" />  {/* A horizontal rule for visual separation. */}
-
-      {/* A Link component acts as an anchor tag but is used for client-side routing to prevent page reloads. */}
+    <div className="container">
+      <label htmlFor="name">Nombre:</label>
+      <input
+        type="text"
+        id="name"
+        className="form-control"
+        value={form.name}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
+      />
+      <br />
+      <label htmlFor="phone">Teléfono:</label>
+      <input
+        type="text"
+        id="phone"
+        className="form-control"
+        value={form.phone}
+        onChange={(e) => setForm({ ...form, phone: e.target.value })}
+      />
+      <br />
+      <label htmlFor="email">Correo electrónico:</label>
+      <input
+        type="text"
+        id="email"
+        className="form-control"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+      />
+      <br />
+      <label htmlFor="address">Dirección:</label>
+      <input
+        type="text"
+        id="address"
+        className="form-control"
+        value={form.address}
+        onChange={(e) => setForm({ ...form, address: e.target.value })}
+      />
+      <br />
+      <div className="d-grid gap-2">
+        <button className="btn btn-primary" type="button" onClick={editContact}>
+          Guardar cambios
+        </button>
+      </div>
       <Link to="/">
-        <span className="btn btn-primary btn-lg" href="#" role="button">
-          Back home
-        </span>
+        <p>Regresar</p>
       </Link>
     </div>
   );
-};
-
-// Use PropTypes to validate the props passed to this component, ensuring reliable behavior.
-Single.propTypes = {
-  // Although 'match' prop is defined here, it is not used in the component.
-  // Consider removing or using it as needed.
-  match: PropTypes.object
 };
